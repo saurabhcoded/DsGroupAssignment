@@ -5,12 +5,8 @@ services:
       dockerfile: Dockerfile
     container_name: dstasks
     restart: unless-stopped
-    environment:
-      NODE_ENV: production
-      PORT: 3000
-      MONGODB_URI: ${MONGODB_URI}
-      JWT_SECRET: ${JWT_SECRET}
-      JWT_EXPIRATION: 7d
+    env_file:
+      - ./api/env/.env.production
     ports:
       - "3000:3000"
     networks:

@@ -1,4 +1,10 @@
-import { createContext, useContext, useState, ReactNode, useEffect } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react";
 import { useMediaQuery, useTheme } from "@mui/material";
 
 interface SidebarContextType {
@@ -34,7 +40,9 @@ export const SidebarProvider = ({ children }: { children: ReactNode }) => {
   const closeMobile = () => setMobileOpen(false);
 
   return (
-    <SidebarContext.Provider value={{ collapsed, mobileOpen, isMobile, toggleSidebar, closeMobile }}>
+    <SidebarContext.Provider
+      value={{ collapsed, mobileOpen, isMobile, toggleSidebar, closeMobile }}
+    >
       {children}
     </SidebarContext.Provider>
   );
