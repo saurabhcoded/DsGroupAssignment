@@ -1,4 +1,4 @@
-import { Box, Stack, Typography, List, ListItem, ListItemIcon, ListItemText } from "@mui/material";
+import { Box, Typography, List, ListItem, ListItemIcon, ListItemText, useMediaQuery, useTheme } from "@mui/material";
 import { Outlet } from "react-router-dom";
 import { CheckCircle, Assignment, Group, Dashboard } from "@mui/icons-material";
 
@@ -10,25 +10,47 @@ const features = [
 ];
 
 const AuthLayout = () => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   return (
-    <Box sx={{ minHeight: "100vh", display: "flex" }}>
-      <Stack direction="row" sx={{ width: "100%", minHeight: "100vh" }}>
+    <Box sx={{ minHeight: "100vh", display: "flex", flexDirection: isMobile ? "column" : "row" }}>
+      {isMobile && (
         <Box
           sx={{
-            width: "40%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            p: 4,
-            bgcolor: "background.paper",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            p: 3,
+            color: "white",
+            textAlign: "center",
           }}
         >
-          <Box sx={{ width: "100%", maxWidth: 400 }}>
-            <Outlet />
-          </Box>
+          <Typography variant="h4" fontWeight={700} sx={{ fontFamily: "'Inter Tight', sans-serif" }}>
+            TaskFlow
+          </Typography>
+          <Typography variant="body2" sx={{ opacity: 0.9, mt: 1 }}>
+            Streamline your workflow
+          </Typography>
         </Box>
+      )}
 
+      <Box
+        sx={{
+          width: isMobile ? "100%" : "40%",
+          flex: isMobile ? 1 : "none",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+          p: { xs: 2, sm: 4 },
+          bgcolor: "background.paper",
+        }}
+      >
+        <Box sx={{ width: "100%", maxWidth: 400 }}>
+          <Outlet />
+        </Box>
+      </Box>
+
+      {!isMobile && (
         <Box
           sx={{
             width: "60%",
@@ -54,12 +76,7 @@ const AuthLayout = () => {
           }}
         >
           <Box sx={{ position: "relative", zIndex: 1, maxWidth: 500 }}>
-            <Typography
-              variant="h2"
-              fontWeight={700}
-              mb={2}
-              sx={{ fontFamily: "'Inter Tight', sans-serif" }}
-            >
+            <Typography variant="h2" fontWeight={700} mb={2} sx={{ fontFamily: "'Inter Tight', sans-serif" }}>
               TaskFlow
             </Typography>
             <Typography variant="h5" mb={4} sx={{ opacity: 0.9 }}>
@@ -73,9 +90,7 @@ const AuthLayout = () => {
                     {feature.icon}
                   </ListItemIcon>
                   <ListItemText
-                    primary={
-                      <Typography fontWeight={600}>{feature.title}</Typography>
-                    }
+                    primary={<Typography fontWeight={600}>{feature.title}</Typography>}
                     secondary={
                       <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)" }}>
                         {feature.desc}
@@ -87,7 +102,7 @@ const AuthLayout = () => {
             </List>
           </Box>
         </Box>
-      </Stack>
+      )}
     </Box>
   );
 };

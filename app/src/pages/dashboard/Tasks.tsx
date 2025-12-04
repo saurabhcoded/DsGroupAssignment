@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import {
   Box, Typography, Paper, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, IconButton, Chip, TextField, MenuItem, Button,
-  CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions
+  CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions,
+  Card, CardContent, Stack, useMediaQuery, useTheme
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -11,6 +12,8 @@ import { fetchUsers } from "../../store/slices/userSlice";
 
 const Tasks = () => {
   const dispatch = useAppDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { tasks, loading, filters } = useAppSelector((state) => state.tasks);
   const { users } = useAppSelector((state) => state.users);
   const { user } = useAppSelector((state) => state.auth);
@@ -91,20 +94,23 @@ const Tasks = () => {
   };
 
   return (
-    <Box p={3}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4" className="heading">Tasks</Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()}>
+    <Box p={{ xs: 2, sm: 3 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
+        <Typography variant="h4" className="heading" sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}>
+          Tasks
+        </Typography>
+        <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()} size={isMobile ? "small" : "medium"}>
           Add Task
         </Button>
       </Box>
 
-      <Box display="flex" gap={2} mb={3} flexWrap="wrap">
+      <Box display="flex" gap={1} mb={3} flexWrap="wrap">
         <TextField
           size="small"
           placeholder="Search..."
           value={filters.search || ""}
           onChange={(e) => handleFilterChange("search", e.target.value)}
+          sx={{ minWidth: { xs: "100%", sm: 150 } }}
         />
         <TextField
           size="small"
@@ -112,7 +118,7 @@ const Tasks = () => {
           label="Status"
           value={filters.status || ""}
           onChange={(e) => handleFilterChange("status", e.target.value)}
-          sx={{ minWidth: 120 }}
+          sx={{ minWidth: { xs: "48%", sm: 120 } }}
         >
           <MenuItem value="">All</MenuItem>
           <MenuItem value="pending">Pending</MenuItem>
@@ -125,24 +131,12 @@ const Tasks = () => {
           label="Priority"
           value={filters.priority || ""}
           onChange={(e) => handleFilterChange("priority", e.target.value)}
-          sx={{ minWidth: 120 }}
+          sx={{ minWidth: { xs: "48%", sm: 120 } }}
         >
           <MenuItem value="">All</MenuItem>
           <MenuItem value="low">Low</MenuItem>
           <MenuItem value="medium">Medium</MenuItem>
           <MenuItem value="high">High</MenuItem>
-        </TextField>
-        <TextField
-          size="small"
-          select
-          label="Sort By"
-          value={filters.sortBy || ""}
-          onChange={(e) => handleFilterChange("sortBy", e.target.value)}
-          sx={{ minWidth: 120 }}
-        >
-          <MenuItem value="">Default</MenuItem>
-          <MenuItem value="dueDate">Due Date</MenuItem>
-          <MenuItem value="priority">Priority</MenuItem>
         </TextField>
       </Box>
 
@@ -150,6 +144,41 @@ const Tasks = () => {
         <Box display="flex" justifyContent="center" py={4}>
           <CircularProgress />
         </Box>
+      ) : isMobile ? (
+        <Stack spacing={2}>
+          {tasks.map((task) => (
+            <Card key={task._id}>
+              <CardContent>
+                <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                  <Typography variant="h6" sx={{ fontSize: "1rem", flex: 1 }}>{task.title}</Typography>
+                  <Box>
+                    <IconButton size="small" onClick={() => handleOpenDialog(task)}>
+                      <Edit fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" color="error" onClick={() => handleDelete(task._id)}>
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </Box>
+                <Box display="flex" gap={1} mt={1} flexWrap="wrap">
+                  <Chip size="small" label={task.status} color={getStatusColor(task.status)} />
+                  <Chip size="small" label={task.priority} color={getPriorityColor(task.priority)} />
+                </Box>
+                <Typography variant="body2" color="text.secondary" mt={1}>
+                  Due: {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "-"}
+                </Typography>
+                {user?.role === "admin" && (
+                  <Typography variant="body2" color="text.secondary">
+                    Assignee: {task.assignee?.name || "-"}
+                  </Typography>
+                )}
+              </CardContent>
+            </Card>
+          ))}
+          {tasks.length === 0 && (
+            <Typography align="center" color="text.secondary">No tasks found</Typography>
+          )}
+        </Stack>
       ) : (
         <TableContainer component={Paper}>
           <Table>
@@ -197,7 +226,7 @@ const Tasks = () => {
         </TableContainer>
       )}
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth fullScreen={isMobile}>
         <DialogTitle>{editingTask ? "Edit Task" : "Create Task"}</DialogTitle>
         <DialogContent>
           <TextField
@@ -266,7 +295,7 @@ const Tasks = () => {
             slotProps={{ inputLabel: { shrink: true } }}
           />
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ p: 2 }}>
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button variant="contained" onClick={handleSubmit}>{editingTask ? "Update" : "Create"}</Button>
         </DialogActions>

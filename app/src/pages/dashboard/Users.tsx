@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import {
   Box, Typography, Paper, Table, TableBody, TableCell, TableContainer,
   TableHead, TableRow, IconButton, Chip, Button, CircularProgress,
-  Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem
+  Dialog, DialogTitle, DialogContent, DialogActions, TextField, MenuItem,
+  Card, CardContent, Stack, useMediaQuery, useTheme
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
@@ -10,6 +11,8 @@ import { fetchUsers, createUser, updateUser, deleteUser } from "../../store/slic
 
 const Users = () => {
   const dispatch = useAppDispatch();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const { users, loading } = useAppSelector((state) => state.users);
   const [openDialog, setOpenDialog] = useState(false);
   const [editingUser, setEditingUser] = useState<any>(null);
@@ -59,10 +62,12 @@ const Users = () => {
   };
 
   return (
-    <Box p={3}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-        <Typography variant="h4" className="heading">Manage Users</Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()}>
+    <Box p={{ xs: 2, sm: 3 }}>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
+        <Typography variant="h4" className="heading" sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}>
+          Manage Users
+        </Typography>
+        <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()} size={isMobile ? "small" : "medium"}>
           Add User
         </Button>
       </Box>
@@ -71,6 +76,38 @@ const Users = () => {
         <Box display="flex" justifyContent="center" py={4}>
           <CircularProgress />
         </Box>
+      ) : isMobile ? (
+        <Stack spacing={2}>
+          {users.map((user) => (
+            <Card key={user._id}>
+              <CardContent>
+                <Box display="flex" justifyContent="space-between" alignItems="flex-start">
+                  <Box>
+                    <Typography variant="h6" sx={{ fontSize: "1rem" }}>{user.name}</Typography>
+                    <Typography variant="body2" color="text.secondary">{user.email}</Typography>
+                  </Box>
+                  <Box>
+                    <IconButton size="small" onClick={() => handleOpenDialog(user)}>
+                      <Edit fontSize="small" />
+                    </IconButton>
+                    <IconButton size="small" color="error" onClick={() => handleDelete(user._id)}>
+                      <Delete fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </Box>
+                <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
+                  <Chip size="small" label={user.role} color={user.role === "admin" ? "primary" : "default"} />
+                  <Typography variant="caption" color="text.secondary">
+                    {new Date(user.createdAt).toLocaleDateString()}
+                  </Typography>
+                </Box>
+              </CardContent>
+            </Card>
+          ))}
+          {users.length === 0 && (
+            <Typography align="center" color="text.secondary">No users found</Typography>
+          )}
+        </Stack>
       ) : (
         <TableContainer component={Paper}>
           <Table>
@@ -89,15 +126,9 @@ const Users = () => {
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    <Chip
-                      size="small"
-                      label={user.role}
-                      color={user.role === "admin" ? "primary" : "default"}
-                    />
+                    <Chip size="small" label={user.role} color={user.role === "admin" ? "primary" : "default"} />
                   </TableCell>
-                  <TableCell>
-                    {new Date(user.createdAt).toLocaleDateString()}
-                  </TableCell>
+                  <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
                   <TableCell align="right">
                     <IconButton size="small" onClick={() => handleOpenDialog(user)}>
                       <Edit />
@@ -118,7 +149,7 @@ const Users = () => {
         </TableContainer>
       )}
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth fullScreen={isMobile}>
         <DialogTitle>{editingUser ? "Edit User" : "Create User"}</DialogTitle>
         <DialogContent>
           <TextField
@@ -161,7 +192,7 @@ const Users = () => {
             <MenuItem value="admin">Admin</MenuItem>
           </TextField>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ p: 2 }}>
           <Button onClick={handleCloseDialog}>Cancel</Button>
           <Button variant="contained" onClick={handleSubmit}>
             {editingUser ? "Update" : "Create"}
@@ -173,4 +204,3 @@ const Users = () => {
 };
 
 export default Users;
-
