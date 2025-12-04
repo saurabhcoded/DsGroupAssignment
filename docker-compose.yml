@@ -1,0 +1,34 @@
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: dstasks
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      MONGODB_URI: ${MONGODB_URI}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRATION: 7d
+    ports:
+      - "3000:3000"
+    networks:
+      - dstasks-network
+
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: dstasks-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - api
+    networks:
+      - dstasks-network
+
+networks:
+  dstasks-network:
+    driver: bridge

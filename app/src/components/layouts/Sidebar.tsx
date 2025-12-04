@@ -55,33 +55,56 @@ const Sidebar = () => {
           borderBottom: "1px solid #e2e8f0",
         }}
       >
-        <Typography variant="h5" fontWeight={700} color="primary" sx={{ fontFamily: "'Inter Tight', sans-serif" }}>
-          {!isMobile && collapsed ? "T" : "TaskFlow"}
+        <Typography
+          variant="h5"
+          fontWeight={700}
+          color="primary"
+          sx={{ fontFamily: "'Inter Tight', sans-serif" }}
+        >
+          {!isMobile && collapsed ? "D" : "DsTasks"}
         </Typography>
       </Box>
 
       <List sx={{ flex: 1, py: 2 }}>
         {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding sx={{ px: !isMobile && collapsed ? 1 : 2, mb: 0.5 }}>
-            <Tooltip title={!isMobile && collapsed ? item.text : ""} placement="right">
+          <ListItem
+            key={item.text}
+            disablePadding
+            sx={{ px: !isMobile && collapsed ? 1 : 2, mb: 0.5 }}
+          >
+            <Tooltip
+              title={!isMobile && collapsed ? item.text : ""}
+              placement="right"
+            >
               <ListItemButton
                 onClick={() => handleNavigate(item.path)}
                 sx={{
-                  justifyContent: !isMobile && collapsed ? "center" : "flex-start",
+                  justifyContent:
+                    !isMobile && collapsed ? "center" : "flex-start",
                   px: !isMobile && collapsed ? 1.5 : 2,
-                  bgcolor: location.pathname === item.path ? "#f1f5f9" : "transparent",
-                  color: location.pathname === item.path ? "#646cff" : "#64748b",
+                  bgcolor:
+                    location.pathname === item.path ? "#f1f5f9" : "transparent",
+                  color:
+                    location.pathname === item.path ? "#646cff" : "#64748b",
                   "&:hover": {
                     bgcolor: "#f1f5f9",
                     color: "#646cff",
                   },
                 }}
               >
-                <ListItemIcon sx={{ color: "inherit", minWidth: !isMobile && collapsed ? 0 : 40 }}>
+                <ListItemIcon
+                  sx={{
+                    color: "inherit",
+                    minWidth: !isMobile && collapsed ? 0 : 40,
+                  }}
+                >
                   {item.icon}
                 </ListItemIcon>
                 {(isMobile || !collapsed) && (
-                  <ListItemText primary={item.text} primaryTypographyProps={{ fontWeight: 500 }} />
+                  <ListItemText
+                    primary={item.text}
+                    primaryTypographyProps={{ fontWeight: 500 }}
+                  />
                 )}
               </ListItemButton>
             </Tooltip>
@@ -89,8 +112,16 @@ const Sidebar = () => {
         ))}
       </List>
 
-      <Box sx={{ p: !isMobile && collapsed ? 1 : 2, borderTop: "1px solid #e2e8f0" }}>
-        <Tooltip title={!isMobile && collapsed ? "Logout" : ""} placement="right">
+      <Box
+        sx={{
+          p: !isMobile && collapsed ? 1 : 2,
+          borderTop: "1px solid #e2e8f0",
+        }}
+      >
+        <Tooltip
+          title={!isMobile && collapsed ? "Logout" : ""}
+          placement="right"
+        >
           <ListItemButton
             onClick={handleLogout}
             sx={{
@@ -100,11 +131,19 @@ const Sidebar = () => {
               "&:hover": { bgcolor: "#fef2f2", color: "#ef4444" },
             }}
           >
-            <ListItemIcon sx={{ color: "inherit", minWidth: !isMobile && collapsed ? 0 : 40 }}>
+            <ListItemIcon
+              sx={{
+                color: "inherit",
+                minWidth: !isMobile && collapsed ? 0 : 40,
+              }}
+            >
               <Logout />
             </ListItemIcon>
             {(isMobile || !collapsed) && (
-              <ListItemText primary="Logout" primaryTypographyProps={{ fontWeight: 500 }} />
+              <ListItemText
+                primary="Logout"
+                primaryTypographyProps={{ fontWeight: 500 }}
+              />
             )}
           </ListItemButton>
         </Tooltip>
