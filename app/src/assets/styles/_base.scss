@@ -1,0 +1,41 @@
+@use "variables" as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+:root {
+  line-height: 1.5;
+  font-weight: $font-weight-normal; 
+  color-scheme: light;
+  color: $text-light;
+  background-color: $bg-light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: $font-familyBody;
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6, .heading, .subheading {
+  font-family: $font-familyHeading;
+}
+
+a {
+  font-weight: $font-weight-medium;
+  color: $primary-color;
+  text-decoration: inherit;
+
+  &:hover {
+    color: $primary-hover;
+  }
+}
+
