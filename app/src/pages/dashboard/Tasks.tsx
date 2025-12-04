@@ -1,13 +1,39 @@
 import { useEffect, useState } from "react";
 import {
-  Box, Typography, Paper, Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, IconButton, Chip, TextField, MenuItem, Button,
-  CircularProgress, Dialog, DialogTitle, DialogContent, DialogActions,
-  Card, CardContent, Stack, useMediaQuery, useTheme
+  Box,
+  Typography,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  IconButton,
+  Chip,
+  TextField,
+  MenuItem,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Card,
+  CardContent,
+  Stack,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { Edit, Delete, Add } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../../store/hooks";
-import { fetchTasks, deleteTask, createTask, updateTask, setFilters } from "../../store/slices/taskSlice";
+import {
+  fetchTasks,
+  deleteTask,
+  createTask,
+  updateTask,
+  setFilters,
+} from "../../store/slices/taskSlice";
 import { fetchUsers } from "../../store/slices/userSlice";
 
 const Tasks = () => {
@@ -20,7 +46,12 @@ const Tasks = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [editingTask, setEditingTask] = useState<any>(null);
   const [formData, setFormData] = useState({
-    title: "", description: "", status: "pending", priority: "medium", dueDate: "", assignee: ""
+    title: "",
+    description: "",
+    status: "pending",
+    priority: "medium",
+    dueDate: "",
+    assignee: "",
   });
 
   useEffect(() => {
@@ -43,11 +74,18 @@ const Tasks = () => {
         status: task.status,
         priority: task.priority,
         dueDate: task.dueDate ? task.dueDate.split("T")[0] : "",
-        assignee: task.assignee?._id || ""
+        assignee: task.assignee?._id || "",
       });
     } else {
       setEditingTask(null);
-      setFormData({ title: "", description: "", status: "pending", priority: "medium", dueDate: "", assignee: "" });
+      setFormData({
+        title: "",
+        description: "",
+        status: "pending",
+        priority: "medium",
+        dueDate: "",
+        assignee: "",
+      });
     }
     setOpenDialog(true);
   };
@@ -79,27 +117,49 @@ const Tasks = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "completed": return "success";
-      case "in-progress": return "info";
-      default: return "warning";
+      case "completed":
+        return "success";
+      case "in-progress":
+        return "info";
+      default:
+        return "warning";
     }
   };
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
-      case "high": return "error";
-      case "medium": return "warning";
-      default: return "success";
+      case "high":
+        return "error";
+      case "medium":
+        return "warning";
+      default:
+        return "success";
     }
   };
 
   return (
     <Box p={{ xs: 2, sm: 3 }}>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
-        <Typography variant="h4" className="heading" sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={3}
+        flexWrap="wrap"
+        gap={2}
+      >
+        <Typography
+          variant="h4"
+          className="heading"
+          sx={{ fontSize: { xs: "1.5rem", sm: "2rem" } }}
+        >
           Tasks
         </Typography>
-        <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()} size={isMobile ? "small" : "medium"}>
+        <Button
+          variant="contained"
+          startIcon={<Add />}
+          onClick={() => handleOpenDialog()}
+          size={isMobile ? "small" : "medium"}
+        >
           Add Task
         </Button>
       </Box>
@@ -149,23 +209,47 @@ const Tasks = () => {
           {tasks.map((task) => (
             <Card key={task._id}>
               <CardContent>
-                <Box display="flex" justifyContent="space-between" alignItems="flex-start">
-                  <Typography variant="h6" sx={{ fontSize: "1rem", flex: 1 }}>{task.title}</Typography>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="flex-start"
+                >
+                  <Typography variant="h6" sx={{ fontSize: "1rem", flex: 1 }}>
+                    {task.title}
+                  </Typography>
                   <Box>
-                    <IconButton size="small" onClick={() => handleOpenDialog(task)}>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleOpenDialog(task)}
+                    >
                       <Edit fontSize="small" />
                     </IconButton>
-                    <IconButton size="small" color="error" onClick={() => handleDelete(task._id)}>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => handleDelete(task._id)}
+                    >
                       <Delete fontSize="small" />
                     </IconButton>
                   </Box>
                 </Box>
                 <Box display="flex" gap={1} mt={1} flexWrap="wrap">
-                  <Chip size="small" label={task.status} color={getStatusColor(task.status)} />
-                  <Chip size="small" label={task.priority} color={getPriorityColor(task.priority)} />
+                  <Chip
+                    size="small"
+                    label={task.status}
+                    color={getStatusColor(task.status)}
+                  />
+                  <Chip
+                    size="small"
+                    label={task.priority}
+                    color={getPriorityColor(task.priority)}
+                  />
                 </Box>
                 <Typography variant="body2" color="text.secondary" mt={1}>
-                  Due: {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "-"}
+                  Due:{" "}
+                  {task.dueDate
+                    ? new Date(task.dueDate).toLocaleDateString()
+                    : "-"}
                 </Typography>
                 {user?.role === "admin" && (
                   <Typography variant="body2" color="text.secondary">
@@ -176,7 +260,9 @@ const Tasks = () => {
             </Card>
           ))}
           {tasks.length === 0 && (
-            <Typography align="center" color="text.secondary">No tasks found</Typography>
+            <Typography align="center" color="text.secondary">
+              No tasks found
+            </Typography>
           )}
         </Stack>
       ) : (
@@ -197,20 +283,39 @@ const Tasks = () => {
                 <TableRow key={task._id}>
                   <TableCell>{task.title}</TableCell>
                   <TableCell>
-                    <Chip size="small" label={task.status} color={getStatusColor(task.status)} />
+                    <Chip
+                      size="small"
+                      label={task.status}
+                      color={getStatusColor(task.status)}
+                    />
                   </TableCell>
                   <TableCell>
-                    <Chip size="small" label={task.priority} color={getPriorityColor(task.priority)} />
+                    <Chip
+                      size="small"
+                      label={task.priority}
+                      color={getPriorityColor(task.priority)}
+                    />
                   </TableCell>
                   <TableCell>
-                    {task.dueDate ? new Date(task.dueDate).toLocaleDateString() : "-"}
+                    {task.dueDate
+                      ? new Date(task.dueDate).toLocaleDateString()
+                      : "-"}
                   </TableCell>
-                  {user?.role === "admin" && <TableCell>{task.assignee?.name || "-"}</TableCell>}
+                  {user?.role === "admin" && (
+                    <TableCell>{task.assignee?.name || "-"}</TableCell>
+                  )}
                   <TableCell align="right">
-                    <IconButton size="small" onClick={() => handleOpenDialog(task)}>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleOpenDialog(task)}
+                    >
                       <Edit />
                     </IconButton>
-                    <IconButton size="small" color="error" onClick={() => handleDelete(task._id)}>
+                    <IconButton
+                      size="small"
+                      color="error"
+                      onClick={() => handleDelete(task._id)}
+                    >
                       <Delete />
                     </IconButton>
                   </TableCell>
@@ -218,7 +323,9 @@ const Tasks = () => {
               ))}
               {tasks.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={6} align="center">No tasks found</TableCell>
+                  <TableCell colSpan={6} align="center">
+                    No tasks found
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -226,14 +333,22 @@ const Tasks = () => {
         </TableContainer>
       )}
 
-      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth fullScreen={isMobile}>
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        maxWidth="sm"
+        fullWidth
+        fullScreen={isMobile}
+      >
         <DialogTitle>{editingTask ? "Edit Task" : "Create Task"}</DialogTitle>
         <DialogContent>
           <TextField
             fullWidth
             label="Title"
             value={formData.title}
-            onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, title: e.target.value })
+            }
             margin="normal"
             required
           />
@@ -241,7 +356,9 @@ const Tasks = () => {
             fullWidth
             label="Description"
             value={formData.description}
-            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
             margin="normal"
             multiline
             rows={3}
@@ -251,7 +368,9 @@ const Tasks = () => {
             select
             label="Status"
             value={formData.status}
-            onChange={(e) => setFormData({ ...formData, status: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, status: e.target.value })
+            }
             margin="normal"
           >
             <MenuItem value="pending">Pending</MenuItem>
@@ -263,7 +382,9 @@ const Tasks = () => {
             select
             label="Priority"
             value={formData.priority}
-            onChange={(e) => setFormData({ ...formData, priority: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, priority: e.target.value })
+            }
             margin="normal"
           >
             <MenuItem value="low">Low</MenuItem>
@@ -276,12 +397,16 @@ const Tasks = () => {
               select
               label="Assign To"
               value={formData.assignee}
-              onChange={(e) => setFormData({ ...formData, assignee: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, assignee: e.target.value })
+              }
               margin="normal"
             >
               <MenuItem value="">Self</MenuItem>
               {users.map((u) => (
-                <MenuItem key={u._id} value={u._id}>{u.name} ({u.email})</MenuItem>
+                <MenuItem key={u._id} value={u._id}>
+                  {u.name} ({u.email})
+                </MenuItem>
               ))}
             </TextField>
           )}
@@ -290,14 +415,18 @@ const Tasks = () => {
             label="Due Date"
             type="date"
             value={formData.dueDate}
-            onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
+            onChange={(e) =>
+              setFormData({ ...formData, dueDate: e.target.value })
+            }
             margin="normal"
             slotProps={{ inputLabel: { shrink: true } }}
           />
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
           <Button onClick={handleCloseDialog}>Cancel</Button>
-          <Button variant="contained" onClick={handleSubmit}>{editingTask ? "Update" : "Create"}</Button>
+          <Button variant="contained" onClick={handleSubmit}>
+            {editingTask ? "Update" : "Create"}
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
